@@ -1,0 +1,42 @@
+/* Global Font */
+body { font-family: 'Poppins', sans-serif; }
+
+/* Animated Gauge Styles */
+.gauge-bg { 
+    fill: none; 
+    stroke: #e2e8f0; 
+    stroke-width: 20; 
+    stroke-linecap: round; 
+}
+
+.gauge-fill { 
+    fill: none; 
+    stroke: #0d9488; /* Default teal-600 */
+    stroke-width: 20; 
+    stroke-linecap: round; 
+    stroke-dasharray: 100 100; /* full circle approximation */
+    stroke-dashoffset: 100; /* initially empty */
+    transition: stroke-dashoffset 1s ease-out, stroke 0.3s; 
+}
+
+/* Input Focus Effects */
+.input-group:focus-within label { color: #0d9488; }
+.input-group:focus-within i { color: #0d9488; }
+
+/* Smooth Fade In Animation */
+.fade-in { animation: fadeIn 0.5s ease-in-out; }
+
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
+/* Browser Specific: Remove arrows from number inputs */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
+input[type=number] { 
+    -moz-appearance: textfield; 
+}

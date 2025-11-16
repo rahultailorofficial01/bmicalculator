@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced BMI & Health Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+        
+        <!-- LEFT SIDE: INPUTS -->
+        <div class="w-full lg:w-1/2 p-8 lg:p-10 bg-white">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2"><i class="fa-solid fa-heart-pulse text-teal-600 mr-2"></i>Health Calculator</h2>
+            <p class="text-slate-500 mb-6 text-sm">Height CM ya Feet kisi mein bhi daalein, auto-convert ho jayegi.</p>
+
+            <!-- Unit Toggles -->
+            <div class="flex bg-slate-100 p-1 rounded-xl mb-6 w-fit">
+                <button id="btn-metric" class="px-6 py-2 rounded-lg text-sm font-medium transition-all bg-white text-teal-700 shadow-sm">Metric (KG)</button>
+                <button id="btn-standard" class="px-6 py-2 rounded-lg text-sm font-medium text-slate-500 transition-all hover:bg-slate-200">Standard (Lbs)</button>
+            </div>
+
+            <form id="calc-form" onsubmit="event.preventDefault(); calculateHealth();">
+                
+                <!-- Height Section (Smart Convert) -->
+                <div class="mb-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-sm font-bold text-slate-700 uppercase tracking-wider">Height Converter</label>
+                        <span class="text-[10px] bg-teal-100 text-teal-700 px-2 py-1 rounded-full font-semibold">Auto-Sync Active</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- CM Input -->
+                        <div>
+                            <label class="block text-xs font-bold text-teal-600 mb-2 uppercase">In Centimeters</label>
+                            <div class="relative">
+                                <input type="number" id="height-cm" placeholder="e.g. 170" class="w-full pl-4 pr-12 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium text-slate-700 shadow-sm" oninput="convertFromCm()">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-400 font-bold">cm</span>
+                            </div>
+                        </div>
+
+                        <!-- Feet/Inch Input -->
+                        <div>
+                            <label class="block text-xs font-bold text-teal-600 mb-2 uppercase">In Feet & Inches</label>
+                            <div class="flex gap-3">
+                                <div class="relative w-full">
+                                    <input type="number" id="height-ft" placeholder="5" class="w-full pl-4 pr-8 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium text-slate-700 shadow-sm" oninput="convertFromFtIn()">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 font-bold">ft</span>
+                                </div>
+                                <div class="relative w-full">
+                                    <input type="number" id="height-in" placeholder="7" class="w-full pl-4 pr-8 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium text-slate-700 shadow-sm" oninput="convertFromFtIn()">
+                                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400 font-bold">in</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weight Section -->
+                <div class="mb-4">
+                    <div id="input-weight-kg">
+                        <div class="input-group">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Weight (KG)</label>
+                            <div class="relative">
+                                <input type="number" id="weight-kg" placeholder="e.g. 70" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium text-slate-700">
+                                <i class="fa-solid fa-weight-scale absolute left-4 top-3.5 text-slate-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="input-weight-lbs" class="hidden">
+                        <div class="input-group">
+                            <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Weight (Pounds)</label>
+                            <div class="relative">
+                                <input type="number" id="weight-lbs" placeholder="e.g. 154" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium text-slate-700">
+                                <i class="fa-solid fa-weight-hanging absolute left-4 top-3.5 text-slate-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gender & Age -->
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="input-group">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Age</label>
+                        <div class="relative">
+                            <input type="number" id="age" placeholder="25" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium text-slate-700">
+                            <i class="fa-solid fa-cake-candles absolute left-4 top-3.5 text-slate-400"></i>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Gender</label>
+                        <div class="relative">
+                            <select id="gender" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none font-medium text-slate-700">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <i class="fa-solid fa-venus-mars absolute left-4 top-3.5 text-slate-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group mb-8">
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Activity</label>
+                    <div class="relative">
+                        <select id="activity" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none font-medium text-slate-700">
+                            <option value="1.2">Sedentary (No exercise)</option>
+                            <option value="1.375">Lightly Active (1-3 days)</option>
+                            <option value="1.55">Moderately Active (3-5 days)</option>
+                            <option value="1.725">Very Active (6-7 days)</option>
+                        </select>
+                        <i class="fa-solid fa-person-running absolute left-4 top-3.5 text-slate-400"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl shadow-lg transform transition hover:-translate-y-1 active:translate-y-0">
+                    Analyze Health <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+
+                <div id="error-msg" class="text-red-500 text-sm mt-3 text-center hidden">Please fill all fields correctly.</div>
+            </form>
+        </div>
+
+        <!-- RIGHT SIDE: RESULTS -->
+        <div id="results-panel" class="w-full lg:w-1/2 bg-slate-900 text-white p-8 lg:p-10 flex-col justify-between relative hidden lg:flex">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-teal-500 rounded-full blur-3xl opacity-10 -mr-20 -mt-20 pointer-events-none"></div>
+
+            <div>
+                <h3 class="text-slate-400 uppercase tracking-widest text-xs font-bold mb-6">Your Health Analysis</h3>
+                
+                <div class="flex flex-col items-center mb-6">
+                    <div class="relative w-48 h-24 mb-2">
+                        <svg viewBox="0 0 100 50" class="w-full h-full overflow-visible">
+                            <path class="gauge-bg" d="M 10 50 A 40 40 0 0 1 90 50" />
+                            <path id="gauge-path" class="gauge-fill" d="M 10 50 A 40 40 0 0 1 90 50" />
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-end -mb-2">
+                            <span id="bmi-score" class="text-5xl font-bold">0.0</span>
+                        </div>
+                    </div>
+                    <p id="result-message" class="text-lg font-medium text-center text-teal-400 mt-2">
+                        Enter details to see result
+                    </p>
+                </div>
+
+                <!-- 4-GRID LAYOUT FOR EXTRA STATS -->
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <!-- Ideal Weight -->
+                    <div class="bg-slate-800 bg-opacity-50 p-3 rounded-xl border border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-weight-scale text-blue-400 text-xs"></i>
+                            <span class="text-xs text-slate-400 font-bold uppercase">Ideal Weight</span>
+                        </div>
+                        <p id="ideal-weight" class="text-md font-bold pl-5">-- kg</p>
+                    </div>
+                    <!-- Daily Calories -->
+                    <div class="bg-slate-800 bg-opacity-50 p-3 rounded-xl border border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-fire text-orange-400 text-xs"></i>
+                            <span class="text-xs text-slate-400 font-bold uppercase">Calories/Day</span>
+                        </div>
+                        <p id="daily-calories" class="text-md font-bold pl-5">-- kcal</p>
+                    </div>
+                    <!-- Water Intake (ADDED BACK) -->
+                    <div class="bg-slate-800 bg-opacity-50 p-3 rounded-xl border border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-glass-water text-cyan-400 text-xs"></i>
+                            <span class="text-xs text-slate-400 font-bold uppercase">Water Intake</span>
+                        </div>
+                        <p id="water-intake" class="text-md font-bold pl-5">-- Liters</p>
+                    </div>
+                    <!-- BMR (ADDED FOR BALANCE) -->
+                    <div class="bg-slate-800 bg-opacity-50 p-3 rounded-xl border border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-battery-half text-purple-400 text-xs"></i>
+                            <span class="text-xs text-slate-400 font-bold uppercase">BMR (Energy)</span>
+                        </div>
+                        <p id="bmr-score" class="text-md font-bold pl-5">-- kcal</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800 bg-opacity-40 rounded-xl p-4 border border-slate-700">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase mb-3">BMI Index Reference</h4>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between items-center p-2 rounded bg-slate-800/50 border-l-4 border-blue-500">
+                            <span class="text-slate-300">Underweight</span><span class="font-mono text-slate-400">&lt; 18.5</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded bg-slate-800/50 border-l-4 border-green-500">
+                            <span class="text-slate-300">Healthy</span><span class="font-mono text-slate-400">18.5 - 24.9</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded bg-slate-800/50 border-l-4 border-yellow-500">
+                            <span class="text-slate-300">Overweight</span><span class="font-mono text-slate-400">25.0 - 29.9</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded bg-slate-800/50 border-l-4 border-red-500">
+                            <span class="text-slate-300">Obese</span><span class="font-mono text-slate-400">30.0 +</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
